@@ -9,24 +9,18 @@ According to the description of the [paper](https://arxiv.org/pdf/2307.10603.pdf
 ### Prerequisites
 1 . Clone this repository
 ```
-git clone https://github.com/houzhijian/CONQUER.git
-cd CONQUER
+git clone https://github.com/Hua78158452/PiRN-EC522-Final.git
 ```
 
 2 . Prepare feature files and data
+Download [FFHQ](https://app.box.com/s/njcngbxvfrhy476fdjpkwmfozo71twpu), which is the dataset author used. However, they did not tell us how to use the dataset. So we tried many times and changed the path in the train.py to make it work. We accidentally found that when the path is a certain one, the code can run.
 
-Download [tvr_feature_release.tar.gz](https://drive.google.com/file/d/1DFnMNH-oi6-cZbl1coXqa_KjtsIsObxG/view?usp=sharing) (21GB). 
+####Dataset used to inference 
+Download[OTIS](https://zenodo.org/records/161439)
+Download[CLEAR](https://uob-my.sharepoint.com/:f:/g/personal/eexna_bristol_ac_uk/EnEq5HdW_ThImbQmKNE8dBoBy3CvXy_yqE4023_GbSoJBQ?e=vMB6Xg)
+Download[heat_chamber_new](https://drive.google.com/file/d/14iVachB95bCCtke8ONPD9CCH20JO75v2/view?usp=sharing)
+
 After downloading the feature file, extract it to **YOUR DATA STORAGE** directory:
-```
-tar zxvf path/to/tvr_feature_release.tar.gz 
-```
-You should be able to see `tvr_feature_release` under **YOUR DATA STORAGE** directory. 
-
-It contains visual features (ResNet, SlowFast) obtained from [HERO](https://github.com/linjieli222/HERO/) authors and text features (subtitle and query, from fine-tuned RoBERTa) obtained from [XML](https://github.com/jayleicn/TVRetrieval) authors. 
-You can refer to the code to learn details on how the features are extracted: 
-[visual feature extraction](https://github.com/linjieli222/HERO_Video_Feature_Extractor), [text feature extraction](https://github.com/jayleicn/TVRetrieval/tree/master/utils/text_feature). 
-
-Then modify `root_path` inside config/tvr_data_config.json to your own root path for data storage.
 
 3 . Install dependencies.
 - Python 
@@ -39,106 +33,41 @@ Then modify `root_path` inside config/tvr_data_config.json to your own root path
 - msgpack
 - msgpack_numpy
 
-To install the dependencies use conda and pip, 
-you need to have anaconda3 or miniconda3 installed first, then:
+To install the dependencies use conda and pip, we suggest using pip command to install any lost dependencies. Chatgpt can help if you do not know how to install them.
+for example:
 ```
-conda create --name conquer
-conda activate conquer 
-conda install python==3.7.9 numpy==1.19.2 pytorch==1.6.0 cudatoolkit=10.1 -c pytorch
-conda install tensorboard==2.4.0 tqdm
 pip install easydict lmdb msgpack msgpack_numpy
 ```
 
-### Training and Inference
-*NOTE*: Currently only support train and inference using one gpu. 
-
-We give examples on how to perform training and inference for our CONQUER model.
-
-1 .  CONQUER training
-
+### Training, Inference & Estimate 
+*NOTE*: Currently only support train and inference using one GPU. 
+1 .  PiRN training
+For successful training, we change the batch size and configuration parameters many times, the details are found in the codes we upload.
+For the train.py to run successfully in SCC(You will do the same thing when you run other codes), we need to create a virtual Python environment:
 ```
-bash scripts/TRAIN_SCRIPTS.sh EXP_ID CUDA_DEVICE_ID
+python3 -m venv myenv
+source myenv/bin/activate
 ```
-`TRAIN_SCRIPTS` is a name string for training script.
-`EXP_ID` is a name string for current run. 
-`CUDA_DEVICE_ID` is cuda device id.
-
-Below are four examples of training CONQUER when
-
-+ it adopts general similarity measure function without shared normalization training objective : 
+then activate training:
 ```
-bash scripts/train_general.sh general 0 
+python3 train.py
 ```
-
-+ it adopts general similarity measure function with three negative videos and extend pool size 1000:   
+2 .  PiRN inference
+After training, you will find the mode, which is a .pth file, in the checkpoint folder, use the one that has the biggest number.
+Before your inference, please check the model you used by checking the configurations.yaml, line 49.
+Then make sure your input path contains the pictures, which are used to infer:
 ```
-bash scripts/train_sharednorm_general.sh general_extend1000_neg3 0 \
---use_extend_pool 1000 --neg_video_num 3 --bsz 16
+python3 inference.py
 ```
-
-+ it adopts disjoint similarity measure function with three negative videos and extend pool size 1000:   
+3 .  Estimate
+After inference, you can find output images in inference_output folder. Please remember to manage them. Then as for the requirement of estimate_psnr.py, you need to put all your restored images's paths in the test_data_lq.txt, put all the ground_truth images' paths in the test_data_gt.txt, and you need to make sure they are matched. 
 ```
-bash scripts/train_sharednorm_disjoint.sh disjoint_extend1000_neg3 0 \
---use_extend_pool 1000 --neg_video_num 3 --bsz 16
+python3 estimate_psnr.py
 ```
-
-+ it adopts exclusive similarity measure function with three negative videos and extend pool size 1000:   
-```
-bash scripts/train_sharednorm_exclusive_pretrain.sh exclusive_pretrain_extend1000_neg3 0 \
---use_extend_pool 1000 --neg_video_num 3 --bsz 16 --encoder_pretrain_ckpt_filepath YOUR_DATA_STORAGE_PATH/first_stage_trained_model/model.ckpt
-```
-
-*NOTE*: The training has randomness when we adopt shared normalization training objective, because we randomly sample negative videos via an adpative pool size. You will witness performance difference each time.
-
-2 .  CONQUER inference
-
-After training, you can inference using the saved model on val or test_public set:
-```
-bash scripts/inference.sh MODEL_DIR_NAME CUDA_DEVICE_ID
-```
-`MODEL_DIR_NAME` is the name of the dir containing the saved model, 
-e.g., `tvr-general_extend1000_neg3-*`. 
-`CUDA_DEVICE_ID` is cuda device id.
-
-By default, this code evaluates all the 3 tasks (VCMR, SVMR, VR), you can change this behavior 
-by appending option, e.g. `--tasks VCMR VR` where only VCMR and VR are evaluated. 
-
-
-Below is one example of inference CONQUER which produce the best performance shown in paper.
-
-2.1. Download the trained model [tvr-conquer_general_paper_performance.tar.gz](https://drive.google.com/file/d/1okbLCyR1U12Kw4qcjRpCk8lbF8FXyzFi/view?usp=sharing) (173 MB). 
-After downloading the trained model, extract it to the current directory:
-```
-tar zxvf tvr-conquer_general_paper_performance.tar.gz
-```
-You should be able to see `results/tvr-conquer_general_paper_performance` under the current directory. 
-
-2.2. Perform inference on validation split
-```
-bash scripts/inference.sh tvr-conquer_general_paper_performance 0 --nms_thd 0.7
-```
-We use non-maximum suppression (NMS) and set the threshold as 0.7, because NMS can contribute to
-a higher R@5 and R@10 score empirically.
-
-## Citation
-If you find this code useful for your research, please cite our paper:
-```
-@inproceedings{hou2020conquer,
-  title={CONQUER: Contextual Query-aware Ranking for Video Corpus Moment Retrieval},
-  author={Zhijian, Hou and  Chong-Wah, Ngo and Wing-Kwong Chan},
-  booktitle={Proceedings of the 29th ACM International Conference on Multimedia},
-  year={2021}
-}
-```
+Then we can get the PSNR and SSIM to estimate the model we trained before.
 
 ## Acknowledgement
-This code borrowed components from the following projects: 
-[TVRetrieval](https://github.com/jayleicn/TVRetrieval), 
-[HERO](https://github.com/linjieli222/HERO/), 
-[HuggingFace](https://github.com/huggingface/transformers), 
-[MMT](https://github.com/gabeur/mmt), 
-[MME](https://github.com/antoine77340/Mixture-of-Embedding-Experts). 
-We thank the authors for open-sourcing these great projects!
+We thank the authors for open-sourcing the great project!
 
 ## Contact
-zjhou3-c [at] my.cityu.edu.hk
+huatong@bu.edu
