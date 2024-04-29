@@ -1,6 +1,6 @@
 # PiRN
-## [ICCV2023] Physics-Driven Turbulence Image Restoration with Stochastic Refinement. 
-## Ajay Jaiswal*, Xingguang Zhang*, Stanley Chan, and Zhangyang Wang 
+## Reproduce Physics-Driven Turbulence Image Restoration with Stochastic Refinement. 
+## Hua Tong*, Bruce Jia*, Yujie Zheng 
 https://arxiv.org/pdf/2307.10603.pdf 
 
 <img width="864" alt="image" src="https://github.com/VITA-Group/PiRN/assets/6660499/f9daaf5a-b0d2-426e-bee3-ede87cf89047">
