@@ -3,20 +3,7 @@
 ## Hua Tong*, Bruce Jia*, Yujie Zheng 
 
 ### Task Definition
-
-According to the description of the paper, we use part of the original dataset to train the model. Then use the model to restore the images. Finally, we estimate the restored images with ground truth images and calculate the PSNR and SSIM.
-
-![task_definition](./figures/problem_definition.png)
-
-
-### Model Overiew
-CONQUER: 
-+ Query-dependent Fusion (QDF) 
-+ Query-aware Feature Learning (QAL) 
-+ Moment localization (ML) head and optional video scoring (VS) head
-
-![model_overview](./figures/conquer_architecture.png)
-
+According to the description of the [paper](https://arxiv.org/pdf/2307.10603.pdf), we use part of the original dataset to train the model. Then use the model to restore the images. Finally, we estimate the restored images with ground truth images and calculate the PSNR and SSIM.
 
 ## Getting started
 ### Prerequisites
