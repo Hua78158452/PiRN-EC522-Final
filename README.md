@@ -4,9 +4,7 @@
 
 ### Task Definition
 
-Given a natural language query, e.g., Addison is having a conversation with Bailey while checking on her baby, 
-the problem of Video Corpus Moment Retrieval, is to locate a precise moment in a video retrieved from a large video corpus.
-And we are especially interested in the more pragmatic scenario, videos are additionally associated with the text descriptions such as subtitles or ASR (automatic speech transcript).
+According to the description of the paper, we use part of the original dataset to train the model. Then use the model to restore the images. Finally, we estimate the restored images with ground truth images and calculate the PSNR and SSIM.
 
 ![task_definition](./figures/problem_definition.png)
 
