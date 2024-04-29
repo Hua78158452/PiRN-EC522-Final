@@ -15,7 +15,8 @@ git clone https://github.com/Hua78158452/PiRN-EC522-Final.git
 2 . Prepare feature files and data
 Download [FFHQ](https://app.box.com/s/njcngbxvfrhy476fdjpkwmfozo71twpu), which is the dataset author used. However, they did not tell us how to use the dataset. So we tried many times and changed the path in the train.py to make it work. We accidentally found that when the path is a certain one, the code can run.
 
-####Dataset used to inference 
+Dataset used to inference 
+
 Download[OTIS](https://zenodo.org/records/161439)
 Download[CLEAR](https://uob-my.sharepoint.com/:f:/g/personal/eexna_bristol_ac_uk/EnEq5HdW_ThImbQmKNE8dBoBy3CvXy_yqE4023_GbSoJBQ?e=vMB6Xg)
 Download[heat_chamber_new](https://drive.google.com/file/d/14iVachB95bCCtke8ONPD9CCH20JO75v2/view?usp=sharing)
