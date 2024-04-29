@@ -1,18 +1,7 @@
-CONQUER: Contexutal Query-aware Ranking for Video Corpus Moment Retreival
-PyTorch implementation of CONQUER: Contexutal Query-aware Ranking for Video Corpus Moment Retreival.
-
+###Reproduce Physics-Driven Turbulence Image Restoration with Stochastic Refinement
+##Hua Tong, Bruce Jia & Yujie Zheng
 Task Definition
-Given a natural language query, e.g., Addison is having a conversation with Bailey while checking on her baby, the problem of Video Corpus Moment Retrieval, is to locate a precise moment in a video retrieved from a large video corpus. And we are especially interested in the more pragmatic scenario, videos are additionally associated with the text descriptions such as subtitles or ASR (automatic speech transcript).
-
-task_definition
-
-Model Overiew
-CONQUER:
-
-Query-dependent Fusion (QDF)
-Query-aware Feature Learning (QAL)
-Moment localization (ML) head and optional video scoring (VS) head
-model_overview
+According to the description of the paper, we use part of the original data set to train the model.
 
 Getting started
 Prerequisites
